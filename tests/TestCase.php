@@ -2,11 +2,11 @@
 
 namespace AntoninMasek\Hashids\Tests;
 
+use AntoninMasek\Hashids\HashidsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
-use AntoninMasek\Hashids\HashidsServiceProvider;
 
 class TestCase extends Orchestra
 {
