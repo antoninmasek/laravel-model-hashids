@@ -15,7 +15,7 @@ trait GeneratesHashId
     public static function bootGeneratesHashId(): void
     {
         static::created(function ($model) {
-            foreach ($model->hashIdColumns() as $index => $column) {
+            foreach (Arr::wrap($model->hashIdColumns()) as $index => $column) {
                 static::setColumn($model, $column, $index);
             }
 
