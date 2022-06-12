@@ -5,9 +5,13 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/antoninmasek/laravel-model-hashids/Check%20&%20fix%20styling?label=code%20style)](https://github.com/antoninmasek/laravel-model-hashids/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/antoninmasek/laravel-model-hashids.svg?style=flat-square)](https://packagist.org/packages/antoninmasek/laravel-model-hashids)
 
-Recently I started using excellent [Hashids](https://hashids.org/php/) package as user facing route key. I like, that
+Recently I started using an excellent [Hashids](https://hashids.org/php/) package as user facing route key. I like, that
 Hashids are a bit less awkward to read as opposed to UUIDs as well as, at least for me, the resulting URL looks
 a bit nicer.
+
+> [2022-06-12] Disclaimer  
+> This package is work in progress at the moment. You may use it, but be aware that it can change. The main
+> usage with traits will, however, stay probably the same. 
 
 ## Installation
 
@@ -118,6 +122,10 @@ public function hashIdMinLength(): int
     return 10;
 }
 ```
+
+## Limitations
+If your model key is auto-incrementing then, at least at the moment, there are 2 round-trips to the
+database. 1st to create model and receive the ID and then 2nd to set the hash_id based on the ID.
 
 ## Testing
 

@@ -14,6 +14,12 @@ trait GeneratesHashId
 {
     public static function bootGeneratesHashId(): void
     {
+        static::creating(function ($model) {
+            foreach (Arr::wrap($model->hashIdColumns()) as $index => $column) {
+                static::setColumn($model, $column, $index);
+            }
+        });
+
         static::created(function ($model) {
             foreach (Arr::wrap($model->hashIdColumns()) as $index => $column) {
                 static::setColumn($model, $column, $index);
@@ -31,31 +37,35 @@ trait GeneratesHashId
             return;
         }
 
-        $get = function (int $index, mixed $array) use (&$get) {
-            if (! is_array($array)) {
-                return $array;
-            }
+        $modelKeyColumn = static::get($index, $model->hashIdModelKeys());
 
-            if (array_key_exists($index, $array)) {
-                return $array[$index];
-            }
+        if (empty($model->$modelKeyColumn)) {
+            return;
+        }
 
-            if (--$index < 0) {
-                return null;
-            }
+        $salt = static::get($index, $model->hashIdSalts());
+        $alphabet = static::get($index, $model->hashIdAlphabets());
+        $minLength = static::get($index, $model->hashIdMinLengths());
 
-            return $get($index, $array);
-        };
-
-        $salt = $get($index, $model->hashIdSalts());
-        $alphabet = $get($index, $model->hashIdAlphabets());
-        $minLength = $get($index, $model->hashIdMinLengths());
-        $modelKeyColumn = $get($index, $model->hashIdModelKeys());
-
-        $hashId = Hashids::make($salt, $minLength, $alphabet)
+        $model->$column = Hashids::make($salt, $minLength, $alphabet)
             ->encode($model->$modelKeyColumn);
+    }
 
-        $model->$column = $hashId;
+    private static function get(int $index, mixed $array): mixed
+    {
+        if (! is_array($array)) {
+            return $array;
+        }
+
+        if (array_key_exists($index, $array)) {
+            return $array[$index];
+        }
+
+        if (--$index < 0) {
+            return null;
+        }
+
+        return static::get($index, $array);
     }
 
     /**
