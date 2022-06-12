@@ -2,7 +2,9 @@
 
 namespace AntoninMasek\Hashids\Tests;
 
-class ExampleTest extends \PHPUnit\Framework\TestCase
+use Illuminate\Support\Facades\Route;
+
+class GeneratesHashIdTest extends TestCase
 {
     public function testItWorks()
     {

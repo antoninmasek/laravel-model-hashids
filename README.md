@@ -32,6 +32,42 @@ return [
 
 ## Usage
 
+To override the default column name just on a specific model, you may implement the following method:
+
+```php
+public function hashIdColumn(): string
+{
+    return 'column-name';
+}
+```
+
+To override the default alphabet just on a specific model, you may implement the following method:
+
+```php
+public function hashIdAlphabet(): string
+{
+    return 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+}
+```
+
+To override the default salt just on a specific model, you may implement the following method:
+
+```php
+public function hashIdSalt(): string
+{
+    return 'My salt';
+}
+```
+
+To override the minimum length just on a specific model, you may implement the following method:
+
+```php
+public function hashIdMinLength(): int
+{
+    return 10;
+}
+```
+
 ```php
 $hashids = new AntoninMasek\Hashids();
 echo $hashids->echoPhrase('Hello, AntoninMasek!');
