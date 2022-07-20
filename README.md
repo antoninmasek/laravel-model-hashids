@@ -32,37 +32,34 @@ This is the contents of the published config file:
 ```php
 return [
     /*
-     * By default, the following columns are considered to be hash_id. If you decide to also bind
-     * models to hash_id, then by default the first column specified here will be used as route
-     * key name.
+     * By default, the following column is considered to be hash_id. If you decide to also bind
+     * models to hash_id, then this column will be used as route key name.
      */
-    'hash_id_columns' => ['hash_id'],
+    'hash_id_column' => 'hash_id',
 
     /*
-     * Define alphabet that will be used by default. You may also define the value as an array
-     * and each entry will be used in order for above specified columns.
+     * This alphabet will be used by default if you won't overwrite it
+     * on a per model basis.
      */
-    'alphabets' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+    'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
 
     /*
-     * Define salt that will be used by default. You may also define the value as an array
-     * and each entry will be used in order for above specified columns.
+     * This salt will be used by default if you won't overwrite it
+     * on a per model basis.
      */
-    'salts' => '',
+    'salt' => '',
 
     /*
      * Define minimum length for generated Hashids. Please note, that this is minimum length
      * and not exact length. That means, that if you specify 5 the resulting Hashid can
-     * have length of 5 characters or more. You may also define the value as an array
-     * and each entry will be used in order for above specified columns.
+     * have length of 5 characters or more.
      */
-    'min_lengths' => 0,
+    'min_length' => 0,
 
     /*
-     * Define column name, that should be encoded. You may also define the value as
-     * an array and each entry will be used in order for above specified columns.
+     * Define column name, that should be encoded.
      */
-    'model_keys' => 'id',
+    'model_key' => 'id',
 ];
 ```
 
@@ -72,7 +69,7 @@ To use this package you'll be most interested in the following two traits: `Gene
 
 ### GeneratesHashId
 
-If you use this trait on your model it makes sure all columns marked as hash_id columns will be filled with generated
+If you use this trait on your model it makes sure the hash_id column will be filled with generated
 hash_id.
 
 ### BindsOnHashId
@@ -83,17 +80,17 @@ This trait will make sure, the route model binding can resolve this model via `h
 
 If you'd like to specify per-model rules you may easily do so via the following methods:
 
-### Override hash_id columns
+### Override hash_id column
 To override the default column name just on a specific model, you may implement the following method:
 
 ```php
-public function hashIdColumns(): string|array
+public function hashIdColumn(): string|array
 {
     return 'column-name';
 }
 ```
 
-### Override alphabets
+### Override alphabet
 To override the default alphabet just on a specific model, you may implement the following method:
 
 ```php
@@ -103,7 +100,7 @@ public function hashIdAlphabet(): string
 }
 ```
 
-### Override salts
+### Override salt
 To override the default salt just on a specific model, you may implement the following method:
 
 ```php
@@ -113,7 +110,7 @@ public function hashIdSalt(): string
 }
 ```
 
-### Override min lengths
+### Override min length
 To override the minimum length just on a specific model, you may implement the following method:
 
 ```php
@@ -128,13 +125,6 @@ If your model key is auto-incrementing then, at least at the moment, there are 2
 database. 1st to create model and receive the ID and then 2nd to set the hash_id based on the ID.
 
 ## Testing
-
-> [2022-06-12]   
-> Please note, that I will be working on testing part more in the future. In the meantime I wrote basic tests that were
-> sufficient for me at the moment, because I decided to create this package on the spot since I 
-> was writing this logic for I don't know how many times already. The logic usually contained 
-> just one hash_id column though, so supporting multiple is a new feature. So just bear in mind, 
-> that tests are not complete for now.
 
 ```bash
 composer test
