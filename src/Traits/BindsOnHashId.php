@@ -3,7 +3,6 @@
 namespace AntoninMasek\Hashids\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 
 trait BindsOnHashId
 {
@@ -14,7 +13,6 @@ trait BindsOnHashId
 
     public function getRouteKeyName(): string
     {
-        return Arr::get($this->hashIdColumns(), 0)
-            ?? $this->getRouteKeyName();
+        return $this->hashIdColumn();
     }
 }

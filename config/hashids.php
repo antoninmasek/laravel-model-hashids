@@ -2,35 +2,32 @@
 
 return [
     /*
-     * By default, the following columns are considered to be hash_id. If you decide to also bind
-     * models to hash_id, then by default the first column specified here will be used as route
-     * key name.
+     * By default, the following column is considered to be hash_id. If you decide to also bind
+     * models to hash_id, then this column will be used as route key name.
      */
-    'hash_id_columns' => ['hash_id'],
+    'hash_id_column' => 'hash_id',
 
     /*
-     * Define alphabet that will be used by default. You may also define the value as an array
-     * and each entry will be used in order for above specified columns.
+     * This alphabet will be used by default if you won't overwrite it
+     * on a per model basis.
      */
-    'alphabets' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+    'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
 
     /*
-     * Define salt that will be used by default. You may also define the value as an array
-     * and each entry will be used in order for above specified columns.
+     * This salt will be used by default if you won't overwrite it
+     * on a per model basis.
      */
-    'salts' => '',
+    'salt' => '',
 
     /*
      * Define minimum length for generated Hashids. Please note, that this is minimum length
      * and not exact length. That means, that if you specify 5 the resulting Hashid can
-     * have length of 5 characters or more. You may also define the value as an array
-     * and each entry will be used in order for above specified columns.
+     * have length of 5 characters or more.
      */
-    'min_lengths' => 0,
+    'min_length' => 0,
 
     /*
-     * Define column name, that should be encoded. You may also define the value as
-     * an array and each entry will be used in order for above specified columns.
+     * Define column name, that should be encoded.
      */
-    'model_keys' => 'id',
+    'model_key' => 'id',
 ];

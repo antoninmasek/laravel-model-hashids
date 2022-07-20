@@ -5,7 +5,6 @@ namespace AntoninMasek\Hashids\Traits;
 use AntoninMasek\Hashids\Facades\Hashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 
 /**
  * @mixin Model
@@ -14,104 +13,51 @@ trait GeneratesHashId
 {
     public static function bootGeneratesHashId(): void
     {
-        static::creating(function ($model) {
-            foreach (Arr::wrap($model->hashIdColumns()) as $index => $column) {
-                static::setColumn($model, $column, $index);
-            }
-        });
-
         static::created(function ($model) {
-            foreach (Arr::wrap($model->hashIdColumns()) as $index => $column) {
-                static::setColumn($model, $column, $index);
+            if (! empty($model->{$model->hashIdColumn()})) {
+                return;
             }
 
-            if ($model->isDirty()) {
-                $model->save();
-            }
+            $hashId = Hashids::make(
+                $model->hashIdSalt(),
+                $model->hashIdMinLength(),
+                $model->hashIdAlphabet(),
+            )
+                ->encode($model->{$model->hashIdKeyColumn()});
+
+            $model->update([$model->hashIdColumn() => $hashId]);
         });
     }
 
-    private static function setColumn($model, $column, $index = null): void
+    public function hashIdColumn(): string
     {
-        if (! empty($model->$column)) {
-            return;
-        }
-
-        $modelKeyColumn = static::get($index, $model->hashIdModelKeys());
-
-        if (empty($model->$modelKeyColumn)) {
-            return;
-        }
-
-        $salt = static::get($index, $model->hashIdSalts());
-        $alphabet = static::get($index, $model->hashIdAlphabets());
-        $minLength = static::get($index, $model->hashIdMinLengths());
-
-        $model->$column = Hashids::make($salt, $minLength, $alphabet)
-            ->encode($model->$modelKeyColumn);
+        return config('hashids.hash_id_column');
     }
 
-    private static function get(int $index, mixed $array): mixed
+    public function hashIdSalt(): string
     {
-        if (! is_array($array)) {
-            return $array;
-        }
-
-        if (array_key_exists($index, $array)) {
-            return $array[$index];
-        }
-
-        if (--$index < 0) {
-            return null;
-        }
-
-        return static::get($index, $array);
+        return config('hashids.salt');
     }
 
-    /**
-     * @return string|array<string>
-     */
-    public function hashIdColumns(): string|array
+    public function hashIdAlphabet(): string
     {
-        return Arr::wrap(config('hashids.hash_id_columns'));
+        return config('hashids.alphabet');
     }
 
-    /**
-     * @return string|array<string>
-     */
-    public function hashIdAlphabets(): string|array
+    public function hashIdMinLength(): int
     {
-        return Arr::wrap(config('hashids.alphabets'));
+        return config('hashids.min_length');
     }
 
-    /**
-     * @return string|array<string>
-     */
-    public function hashIdSalts(): string|array
+    public function hashIdKeyColumn(): string
     {
-        return Arr::wrap(config('hashids.salts'));
+        return config('hashids.model_key');
     }
 
-    /**
-     * @return int|array<int>
-     */
-    public function hashIdMinLengths(): int|array
-    {
-        return Arr::wrap(config('hashids.min_lengths'));
-    }
-
-    /**
-     * @return string|array<string>
-     */
-    public function hashIdModelKeys(): string|array
-    {
-        return Arr::wrap(config('hashids.model_keys'));
-    }
-
-    public function scopeWhereHashId(Builder $query, $hashId, $hashIdColumn = null): Builder
+    public function scopeWhereHashId(Builder $query, string $hashId): Builder
     {
         return $query->where(
-            $hashIdColumn ?? Arr::get($this->hashIdColumns(), 0),
+            $this->hashIdColumn(),
             $hashId,
         );
     }
