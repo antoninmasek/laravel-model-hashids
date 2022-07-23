@@ -11,6 +11,6 @@ class HashidsServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-model-hashids')
-            ->hasConfigFile('hashids');
+            ->hasConfigFile('model-hashids');
     }
 }

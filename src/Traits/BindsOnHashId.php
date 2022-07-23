@@ -13,6 +13,8 @@ trait BindsOnHashId
 
     public function getRouteKeyName(): string
     {
-        return $this->hashIdColumn();
+        return ! method_exists($this, 'hashIdColumn')
+            ? config('model-hashids.hash_id_column')
+            : $this->hashIdColumn();
     }
 }

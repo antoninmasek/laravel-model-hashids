@@ -5,9 +5,9 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/antoninmasek/laravel-model-hashids/Check%20&%20fix%20styling?label=code%20style)](https://github.com/antoninmasek/laravel-model-hashids/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/antoninmasek/laravel-model-hashids.svg?style=flat-square)](https://packagist.org/packages/antoninmasek/laravel-model-hashids)
 
-Recently I started using an excellent [Hashids](https://hashids.org/php/) package as user-facing route key. I like, that
-Hashids are a bit less awkward to read as opposed to UUIDs and in my opinion the resulting URL looks
-a bit nicer.
+In some cases I really like to use [Hashids](https://hashids.org/php/) instead of uuids as my model keys. For me Hashids are less awkward to read and the resulting URL looks 
+a bit nicer in my opinion. This package is inspired by [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) package by Michael Dyrynda and aims
+to make it a breeze to start using Hashids as your model keys.
 
 ## Installation
 
@@ -28,97 +28,115 @@ This is the contents of the published config file:
 ```php
 return [
     /*
-     * By default, the following column is considered to be hash_id. If you decide to also bind
+     * The following column will be filled with the generated hash id. If you decide to also bind
      * models to hash_id, then this column will be used as route key name.
      */
     'hash_id_column' => 'hash_id',
 
     /*
-     * This alphabet will be used by default if you won't overwrite it
-     * on a per model basis.
-     */
-    'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
-
-    /*
-     * This salt will be used by default if you won't overwrite it
-     * on a per model basis.
-     */
-    'salt' => '',
-
-    /*
-     * Define minimum length for generated Hashids. Please note, that this is minimum length
-     * and not exact length. That means, that if you specify 5 the resulting Hashid can
-     * have length of 5 characters or more.
-     */
-    'min_length' => 0,
-
-    /*
-     * Define column name, that should be encoded.
+     * Define the column name, which will be used to generate the hash id. This column has to contain
+     * a numeric value or an array of numbers and should be unique for each model to prevent
+     * potential collisions.
      */
     'model_key' => 'id',
 ];
 ```
 
+> This package uses [antoninmasek/laravel-hashids](https://github.com/antoninmasek/laravel-hashids) in the background. And if you wish
+> to configure some aspects of the underlying hash id generation, then please
+> take a look at a readme of the package.
+
 ## Usage
 
 To use this package you'll be most interested in the following two traits: `GeneratesHashId` and `BindsOnHashId`.
 
-### GeneratesHashId
-
-If you use this trait on your model it makes sure the hash_id column will be filled with generated
-hash_id.
-
-### BindsOnHashId
-
-This trait will make sure, the route model binding can resolve this model via `hash_id` and not regular `id`.
-
-## Overriding
-
-If you'd like to specify per-model rules you may easily do so via the following methods:
-
-### Override hash_id column
-To override the default column name just on a specific model, you may implement the following method:
+### Generating hash id
+In order for your model to automatically get a hash id after it is created just use 
+`GeneratesHashId` trait on your model:
 
 ```php
-public function hashIdColumn(): string|array
+use AntoninMasek\Hashids\Traits\GeneratesHashId;
+
+class YourModel extend Model
 {
-    return 'column-name';
+    use GeneratesHashId;
 }
 ```
 
-### Override alphabet
-To override the default alphabet just on a specific model, you may implement the following method:
+### Binding on hash id
+To also bind your model to hash id you also need to use `BindsOnHashId` trait:
 
 ```php
-public function hashIdAlphabet(): string
+use AntoninMasek\Hashids\Traits\GeneratesHashId;
+use AntoninMasek\Hashids\Traits\BindsOnHashId;
+
+class YourModel extend Model
 {
-    return 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
+    use GeneratesHashId;
+    use BindsOnHashId;
 }
 ```
 
-### Override salt
-To override the default salt just on a specific model, you may implement the following method:
+## Configuration
+
+If you need to execute some logic in order to determine salt/alphabet/minlength you have
+a few callbacks at your disposal:
+
+### Global
+If you want to set these globally you may use the following callbacks. The callback is
+supplied with the model as a parameter.
 
 ```php
-public function hashIdSalt(): string
-{
-    return 'My salt';
-}
+use AntoninMasek\Hashids\ModelHashids;
+
+ModelHashids::generateSaltUsing(function(Model $model) {
+    // your logic   
+    return $salt;
+});
+
+ModelHashids::generateMinLengthUsing(function(Model $model) {
+    // your logic   
+    return $minLength;
+});
+
+ModelHashids::generateAlphabetUsing(function(Model $model) {
+    // your logic   
+    return $alphabet;
+});
 ```
 
-### Override min length
-To override the minimum length just on a specific model, you may implement the following method:
+## Local
+If you wish to have a specific logic just for a certain model you may define these methods
+on the desired model:
 
 ```php
-public function hashIdMinLength(): int
-{
-    return 10;
-}
+// Overwrite the column to fill with hash id for this specific model
+public function hashIdColumn(): string;
+
+// Overwrite the column to use for hash id generation for this specific model
+public function hashIdKeyColumn(): string;
+
+// Overwrite the logic to generate salt for this specific model
+public function hashIdSalt(): string;
+
+// Overwrite the logic to generate alphabet for this specific model
+public function hashIdAlphabet(): string;
+
+// Overwrite the logic to generate min length for this specific model
+public function hashIdMinLength(): string;
 ```
+
+### Precedence
+This is the order in which the values are taken:
+
+1. Model specific logic
+2. Global logic
+3. Config values
+4. Hashids package
 
 ## Limitations
 If your model key is auto-incrementing then, at least at the moment, there are 2 round-trips to the
-database. 1st to create model and receive the ID and then 2nd to set the hash_id based on the ID.
+database. 1st to create the model and receive the ID and then 2nd to set the hash_id based on the ID.
 
 ## Testing
 

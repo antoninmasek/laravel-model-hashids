@@ -17,7 +17,7 @@
     ],
     "require": {
         "php": "^8.0|^8.1",
-        "hashids/hashids": "^4.1",
+        "antoninmasek/laravel-hashids": "^0.1.0",
         "illuminate/contracts": "^9.0",
         "spatie/laravel-package-tools": "^1.9.2"
     },
@@ -34,8 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AntoninMasek\\Hashids\\": "src",
-            "AntoninMasek\\Hashids\\Database\\Factories\\": "database/factories"
+            "AntoninMasek\\Hashids\\": "src"
         }
     },
     "autoload-dev": {
