@@ -158,7 +158,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## Special thanks
 
-- To [Spatie](https://spatie.be/) for their amazing [skeleton](https://github.com/spatie/package-skeleton-laravel) which
-  I used to scaffold this repository.
 - To Michael Dyrynda for his [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) package, by
   which this package is heavily inspired.
+- To [Spatie](https://spatie.be/) for their amazing [skeleton](https://github.com/spatie/package-skeleton-laravel) which
+  I used to scaffold this repository.
