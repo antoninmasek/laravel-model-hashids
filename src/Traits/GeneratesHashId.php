@@ -15,7 +15,7 @@ trait GeneratesHashId
     public static function bootGeneratesHashId(): void
     {
         static::creating(function ($model) {
-            if (empty($model->{$this->hashIdKeyColumn()})) {
+            if (empty($model->{$model->hashIdKeyColumn()})) {
                 return;
             }
 
