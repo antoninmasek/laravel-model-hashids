@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-model-hashids` will be documented in this file.
 
+## 0.3.1 - 2022-07-23
+
+- Rename service provider
+
+**Full Changelog**: https://github.com/antoninmasek/laravel-model-hashids/compare/0.3.0...0.3.1
+
 ## 0.3.0 - 2022-07-23
 
 ### What's Changed
