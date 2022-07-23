@@ -4,14 +4,13 @@ namespace AntoninMasek\Hashids;
 
 class Hashids
 {
-    public function __construct(private ?string $salt = null, private ?string $alphabet = null, private ?int $min_length = null)
-    {
-        $this->salt ??= config('hashids.salt');
-        $this->alphabet ??= config('hashids.alphabet');
-        $this->min_length ??= config('hashids.min_length');
-    }
+    private ?string $salt = null;
 
-    public function salt(string $salt): static
+    private ?string $alphabet = null;
+
+    private ?int $min_length = null;
+
+    public function salt(string $salt = null): static
     {
         $clone = clone $this;
 
@@ -20,7 +19,7 @@ class Hashids
         return $clone;
     }
 
-    public function alphabet(string $alphabet): static
+    public function alphabet(string $alphabet = null): static
     {
         $clone = clone $this;
 
@@ -29,7 +28,7 @@ class Hashids
         return $clone;
     }
 
-    public function minLength(int $minLength): static
+    public function minLength(int $minLength = null): static
     {
         $clone = clone $this;
 
@@ -60,10 +59,12 @@ class Hashids
 
     private function getHashidsGenerator(): \Hashids\Hashids
     {
-        return new \Hashids\Hashids(
-            $this->salt,
-            $this->min_length,
-            $this->alphabet
-        );
+        $parameters = array_filter([
+            'salt' => $this->salt ?? config('hashids.salt'),
+            'minHashLength' => $this->min_length ?? config('hashids.min_length'),
+            'alphabet' => $this->alphabet ?? config('hashids.alphabet'),
+        ]);
+
+        return new \Hashids\Hashids(...$parameters);
     }
 }

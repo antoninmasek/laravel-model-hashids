@@ -6,11 +6,25 @@ use AntoninMasek\Hashids\Facades\Hashids;
 
 class HashidsTest extends TestCase
 {
-    public function testItCanEncode()
+    public function testItCanEncodeNumber()
     {
         $encodedValue = Hashids::encode(1);
 
         $this->assertEquals('jR', $encodedValue);
+    }
+
+    public function testItCanEncodeArrayOfNumbers()
+    {
+        $encodedValue = Hashids::encode([1, 2, 3]);
+
+        $this->assertEquals('o2fXhV', $encodedValue);
+    }
+
+    public function testItIsNotPossibleToEncodeNull()
+    {
+        $this->expectError();
+
+        Hashids::encode(null);
     }
 
     public function testItCanEncodeWithSalt()
