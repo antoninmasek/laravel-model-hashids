@@ -2,7 +2,7 @@
 
 namespace AntoninMasek\Hashids\Tests;
 
-use AntoninMasek\Hashids\HashidsServiceProvider;
+use AntoninMasek\Hashids\ModelHashidsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
@@ -24,7 +24,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            HashidsServiceProvider::class,
+            ModelHashidsServiceProvider::class,
         ];
     }
 

@@ -56,7 +56,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "AntoninMasek\\Hashids\\HashidsServiceProvider"
+                "AntoninMasek\\Hashids\\ModelHashidsServiceProvider"
             ],
             "aliases": {
                 "Hashids": "AntoninMasek\\Hashids\\Facades\\Hashids"
