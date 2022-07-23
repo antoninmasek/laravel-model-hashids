@@ -8,16 +8,22 @@ class HashidsTest extends TestCase
 {
     public function testItCanEncodeNumber()
     {
-        $encodedValue = Hashids::encode(1);
+        $value = 1;
 
-        $this->assertEquals('jR', $encodedValue);
+        $this->assertEquals(
+            [$value],
+            Hashids::decode(Hashids::encode($value)),
+        );
     }
 
     public function testItCanEncodeArrayOfNumbers()
     {
-        $encodedValue = Hashids::encode([1, 2, 3]);
+        $value = [1, 2, 3];
 
-        $this->assertEquals('o2fXhV', $encodedValue);
+        $this->assertEquals(
+            $value,
+            Hashids::decode(Hashids::encode($value)),
+        );
     }
 
     public function testItIsNotPossibleToEncodeNull()
@@ -29,43 +35,6 @@ class HashidsTest extends TestCase
 
     public function testItCanEncodeWithSalt()
     {
-        $encodedValue = Hashids::salt('test')
-            ->encode(1);
-
-        $this->assertEquals('gp', $encodedValue);
-    }
-
-    public function testItCanEncodeWithMinLength()
-    {
-        $encodedValue = Hashids::minLength(5)
-            ->encode(1);
-
-        $this->assertTrue(strlen($encodedValue) >= 5);
-    }
-
-    public function testItCanEncodeWithAlphabet()
-    {
-        $alphabet = '1234567890qwertz';
-
-        $encodedValue = Hashids::alphabet($alphabet)
-            ->encode(1);
-
-        $containsInvalidValue = collect(str_split($encodedValue))->contains(function ($char) use ($alphabet) {
-            return ! str($alphabet)->contains($char);
-        });
-
-        $this->assertFalse($containsInvalidValue);
-    }
-
-    public function testItCanDecode()
-    {
-        $decodedValue = Hashids::decode('jR');
-
-        $this->assertEquals([1], $decodedValue);
-    }
-
-    public function testItCanDecodeWithSalt()
-    {
         $value = 1;
         $generator = Hashids::salt('test');
 
@@ -75,25 +44,37 @@ class HashidsTest extends TestCase
         );
     }
 
-    public function testItCanDecodeWithMinLength()
+    public function testItCanEncodeWithMinLength()
     {
         $value = 1;
-        $generator = Hashids::minLength(5);
+        $length = 5;
+        $generator = Hashids::minLength($length);
+        $encodedValue = $generator->encode($value);
 
         $this->assertEquals(
             [$value],
-            $generator->decode($generator->encode($value)),
+            $generator->decode($encodedValue),
         );
+
+        $this->assertTrue(strlen($encodedValue) >= $length);
     }
 
-    public function testItCanDecodeWithAlphabet()
+    public function testItCanEncodeWithAlphabet()
     {
         $value = 1;
-        $generator = Hashids::alphabet('1234567890qwertz');
+        $alphabet = '1234567890qwertz';
+        $generator = Hashids::alphabet($alphabet);
+        $encodedValue = $generator->encode($value);
 
         $this->assertEquals(
             [$value],
-            $generator->decode($generator->encode($value)),
+            $generator->decode($encodedValue),
         );
+
+        $containsInvalidValue = collect(str_split($encodedValue))->contains(function ($char) use ($alphabet) {
+            return ! str($alphabet)->contains($char);
+        });
+
+        $this->assertFalse($containsInvalidValue);
     }
 }
