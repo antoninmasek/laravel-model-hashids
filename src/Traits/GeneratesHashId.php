@@ -3,6 +3,7 @@
 namespace AntoninMasek\Hashids\Traits;
 
 use AntoninMasek\Hashids\Facades\Hashids;
+use AntoninMasek\Hashids\ModelHashids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,52 +14,71 @@ trait GeneratesHashId
 {
     public static function bootGeneratesHashId(): void
     {
-        static::created(function ($model) {
-            if (! empty($model->{$model->hashIdColumn()})) {
+        static::creating(function ($model) {
+            if (empty($model->{$model->hashIdKeyColumn()})) {
                 return;
             }
 
-            $hashId = Hashids::make(
-                $model->hashIdSalt(),
-                $model->hashIdMinLength(),
-                $model->hashIdAlphabet(),
-            )
-                ->encode($model->{$model->hashIdKeyColumn()});
+            $hashIdColumn = ! method_exists($model, 'hashIdColumn')
+                ? config('model-hashids.hash_id_column')
+                : $model->hashIdColumn();
 
-            $model->update([$model->hashIdColumn() => $hashId]);
+            if (! empty($model->{$hashIdColumn})) {
+                return;
+            }
+
+            $model->{$hashIdColumn} = $model->generateHashId();
         });
+
+        static::created(function ($model) {
+            $hashIdColumn = ! method_exists($model, 'hashIdColumn')
+                ? config('model-hashids.hash_id_column')
+                : $model->hashIdColumn();
+
+            if (! empty($model->{$hashIdColumn})) {
+                return;
+            }
+
+            $model->update([$hashIdColumn => $model->generateHashId()]);
+        });
+    }
+
+    public function generateHashId(): string
+    {
+        $salt = ! method_exists($this, 'hashIdSalt')
+            ? ModelHashids::generateSalt($this)
+            : $this->hashIdSalt();
+
+        $alphabet = ! method_exists($this, 'hashIdAlphabet')
+            ? ModelHashids::generateAlphabet($this)
+            : $this->hashIdAlphabet();
+
+        $minLength = ! method_exists($this, 'hashIdMinLength')
+            ? ModelHashids::generateMinLength($this)
+            : $this->hashIdMinLength();
+
+        return Hashids::salt($salt)
+            ->alphabet($alphabet)
+            ->minLength($minLength)
+            ->encode($this->{$this->hashIdKeyColumn()});
     }
 
     public function hashIdColumn(): string
     {
-        return config('hashids.hash_id_column');
-    }
-
-    public function hashIdSalt(): string
-    {
-        return config('hashids.salt');
-    }
-
-    public function hashIdAlphabet(): string
-    {
-        return config('hashids.alphabet');
-    }
-
-    public function hashIdMinLength(): int
-    {
-        return config('hashids.min_length');
+        return config('model-hashids.hash_id_column');
     }
 
     public function hashIdKeyColumn(): string
     {
-        return config('hashids.model_key');
+        return config('model-hashids.model_key');
     }
 
     public function scopeWhereHashId(Builder $query, string $hashId): Builder
     {
-        return $query->where(
-            $this->hashIdColumn(),
-            $hashId,
-        );
+        $hashIdColumn = ! method_exists($this, 'hashIdColumn')
+            ? config('model-hashids.hash_id_column')
+            : $this->hashIdColumn();
+
+        return $query->where($hashIdColumn, $hashId);
     }
 }
