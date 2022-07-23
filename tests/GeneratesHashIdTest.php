@@ -2,11 +2,14 @@
 
 namespace AntoninMasek\Hashids\Tests;
 
+use _PHPStan_9a6ded56a\Nette\Neon\Exception;
 use AntoninMasek\Hashids\Facades\Hashids;
 use AntoninMasek\Hashids\ModelHashids;
 use AntoninMasek\Hashids\Tests\Fixtures\BindingTestModel;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModel;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithAlphabetGenerator;
+use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithDifferentHashidColumn;
+use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithDifferentKeyForGenerationGenerator;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithMinLengthGenerator;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithSaltGenerator;
 use Illuminate\Database\Eloquent\Model;
@@ -250,5 +253,41 @@ class GeneratesHashIdTest extends TestCase
 
         $this->assertSame($model->hash_id, $model2->hash_id);
         $this->assertNotSame(Hashids::salt('')->encode($model->id), $model->hash_id);
+    }
+
+    public function testItDoesNotDoTwoTripsToDbWhenKeyForGenerationIsPresentDuringCreation()
+    {
+        $model = TestModel::create();
+        $model2 = TestModelWithDifferentKeyForGenerationGenerator::create(['diff_key' => 1]);
+
+        TestModelWithDifferentKeyForGenerationGenerator::updating(function ($model) {
+            throw new Exception('This should not be triggered');
+        });
+
+        $this->assertSame($model->id, $model2->id);
+        $this->assertTrue($model->wasChanged('hash_id'));
+        $this->assertFalse($model2->wasChanged('hash_id'));
+    }
+
+    public function testItIsPossibleToUseDifferentColumnToFillWithHashId()
+    {
+        config()->set('model-hashids.hash_id_column', 'alternative_hash_id');
+
+        $model = TestModel::create();
+
+        $this->assertNull($model->hash_id);
+        $this->assertNotNull($model->alternative_hash_id);
+    }
+
+    public function testItIsPossibleToUseDifferentColumnToFillWithHashIdForSpecificModel()
+    {
+        $model = TestModel::create();
+        $model2 = TestModelWithDifferentHashidColumn::create();
+
+        $this->assertNotNull($model->hash_id);
+        $this->assertNull($model->alternative_hash_id);
+
+        $this->assertNull($model2->hash_id);
+        $this->assertNotNull($model2->alternative_hash_id);
     }
 }

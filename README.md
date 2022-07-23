@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/antoninmasek/laravel-model-hashids.svg?style=flat-square)](https://packagist.org/packages/antoninmasek/laravel-model-hashids)
 
 In some cases I really like to use [Hashids](https://hashids.org/php/) instead of uuids as my model keys. For me Hashids are less awkward to read and the resulting URL looks 
-a bit nicer in my opinion. This package is inspired by [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) package by Michael Dyrynda and aims
+a bit nicer in my opinion. This package is inspired by [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) by Michael Dyrynda and aims
 to make it a breeze to start using Hashids as your model keys.
 
 ## Installation
