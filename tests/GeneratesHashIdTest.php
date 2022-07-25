@@ -290,4 +290,14 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNull($model2->hash_id);
         $this->assertNotNull($model2->alternative_hash_id);
     }
+
+    public function testItCanQueryResultsViaScope()
+    {
+        TestModel::create();
+        $model = TestModel::create();
+        $results = TestModel::whereHashId($model->hash_id)->get();
+
+        $this->assertCount(1, $results);
+        $this->assertTrue($model->is($results->first()));
+    }
 }
