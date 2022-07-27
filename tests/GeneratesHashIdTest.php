@@ -300,4 +300,32 @@ class GeneratesHashIdTest extends TestCase
         $this->assertCount(1, $results);
         $this->assertTrue($model->is($results->first()));
     }
+
+    public function testItCanRegenerateHashIdColumn()
+    {
+        $model = TestModel::create();
+        $expectedHashId = $model->hash_id;
+
+        $model->update(['hash_id' => null]);
+        $this->assertEmpty($model->refresh()->hash_id);
+
+        $model->regenerateHashId()->refresh();
+        $this->assertSame($expectedHashId, $model->hash_id);
+        $this->assertFalse($model->isDirty(['hash_id']));
+        $this->assertTrue($model->wasChanged(['hash_id']));
+    }
+
+    public function testItCanRegenerateHashIdColumnWithoutInstantlyPersistingInDatabase()
+    {
+        $model = TestModel::create();
+        $expectedHashId = $model->hash_id;
+
+        $model->update(['hash_id' => null]);
+        $this->assertEmpty($model->refresh()->hash_id);
+
+        $model->regenerateHashId(false);
+        $this->assertSame($expectedHashId, $model->hash_id);
+        $this->assertTrue($model->isDirty(['hash_id']));
+        $this->assertTrue($model->wasChanged(['hash_id']));
+    }
 }

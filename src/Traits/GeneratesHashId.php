@@ -27,7 +27,7 @@ trait GeneratesHashId
                 return;
             }
 
-            $model->{$hashIdColumn} = $model->generateHashId();
+            $model->regenerateHashId(false);
         });
 
         static::created(function ($model) {
@@ -39,28 +39,23 @@ trait GeneratesHashId
                 return;
             }
 
-            $model->update([$hashIdColumn => $model->generateHashId()]);
+            $model->regenerateHashId();
         });
     }
 
-    public function generateHashId(): string
+    public function regenerateHashId(bool $saveToDatabase = true): static
     {
-        $salt = ! method_exists($this, 'hashIdSalt')
-            ? ModelHashids::generateSalt($this)
-            : $this->hashIdSalt();
+        $hashIdColumn = ! method_exists($this, 'hashIdColumn')
+            ? config('model-hashids.hash_id_column')
+            : $this->hashIdColumn();
 
-        $alphabet = ! method_exists($this, 'hashIdAlphabet')
-            ? ModelHashids::generateAlphabet($this)
-            : $this->hashIdAlphabet();
+        $this->{$hashIdColumn} = $this->generateHashId();
 
-        $minLength = ! method_exists($this, 'hashIdMinLength')
-            ? ModelHashids::generateMinLength($this)
-            : $this->hashIdMinLength();
+        if ($saveToDatabase) {
+            $this->save();
+        }
 
-        return Hashids::salt($salt)
-            ->alphabet($alphabet)
-            ->minLength($minLength)
-            ->encode($this->{$this->hashIdKeyColumn()});
+        return $this;
     }
 
     public function hashIdColumn(): string
@@ -80,5 +75,25 @@ trait GeneratesHashId
             : $this->hashIdColumn();
 
         return $query->where($hashIdColumn, $hashId);
+    }
+
+    private function generateHashId(): string
+    {
+        $salt = ! method_exists($this, 'hashIdSalt')
+            ? ModelHashids::generateSalt($this)
+            : $this->hashIdSalt();
+
+        $alphabet = ! method_exists($this, 'hashIdAlphabet')
+            ? ModelHashids::generateAlphabet($this)
+            : $this->hashIdAlphabet();
+
+        $minLength = ! method_exists($this, 'hashIdMinLength')
+            ? ModelHashids::generateMinLength($this)
+            : $this->hashIdMinLength();
+
+        return Hashids::salt($salt)
+            ->alphabet($alphabet)
+            ->minLength($minLength)
+            ->encode($this->{$this->hashIdKeyColumn()});
     }
 }
