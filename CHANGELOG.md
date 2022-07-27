@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-model-hashids` will be documented in this file.
 
+## 0.4.0 - 2022-07-27
+
+### What's Changed
+
+- Possibility to regenerate hash id by @antoninmasek in https://github.com/antoninmasek/laravel-model-hashids/pull/3
+
+**Full Changelog**: https://github.com/antoninmasek/laravel-model-hashids/compare/0.3.1...0.4.0
+
 ## 0.3.1 - 2022-07-23
 
 - Rename service provider
