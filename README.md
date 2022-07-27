@@ -134,6 +134,17 @@ This is the order in which the values are taken:
 3. Config values
 4. Hashids package
 
+## Regenerating hash id
+If you wish to regenerate a hash id for a particular model with current configuration you may do so as follows:
+```php
+// This will save the new hash id directly to database
+$model->regenerateHashId();
+
+// This will just regenerate the hash id on the instance without persisting it.
+// You will need to call the save() method to persist it.
+$model->regenerateHashId(saveToDatabase: false);
+```
+
 ## Limitations
 If your model key is auto-incrementing then, at least at the moment, there are 2 round-trips to the
 database. 1st to create the model and receive the ID and then 2nd to set the hash_id based on the ID.
