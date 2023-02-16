@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-model-hashids` will be documented in this file.
 
+## 0.5.0 - 2023-02-16
+
+### What's Changed
+
+- Laravel 10 Support by @sweptsquash in https://github.com/antoninmasek/laravel-model-hashids/pull/4
+
+### New Contributors
+
+- @sweptsquash made their first contribution in https://github.com/antoninmasek/laravel-model-hashids/pull/4
+
+**Full Changelog**: https://github.com/antoninmasek/laravel-model-hashids/compare/0.4.0...0.5.0
+
 ## 0.4.0 - 2022-07-27
 
 ### What's Changed
