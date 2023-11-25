@@ -13,4 +13,9 @@ return [
      * potential collisions.
      */
     'model_key' => 'id',
+
+    /*
+     * If true, then the model won't fire `updated` event upon setting the hash id
+     */
+    'save_quietly' => true,
 ];

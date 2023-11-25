@@ -51,7 +51,13 @@ trait GeneratesHashId
 
         $this->{$hashIdColumn} = $this->generateHashId();
 
-        if ($saveToDatabase) {
+        if (! $saveToDatabase) {
+            return $this;
+        }
+
+        if (config('model-hashids.save_quietly')) {
+            $this->saveQuietly();
+        } else {
             $this->save();
         }
 
