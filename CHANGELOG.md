@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-model-hashids` will be documented in this file.
 
+## 0.6.0 - 2023-11-25
+
+### Breaking change
+
+The `updating` eloquent model event won't be fired when setting the `hash_id`. If you want to change this, you need to set `save_quietly` to false inside the config file.
+
 ## 0.5.0 - 2023-02-16
 
 ### What's Changed
