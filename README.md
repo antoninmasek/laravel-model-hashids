@@ -161,7 +161,7 @@ If your model key is auto-incrementing then, at least at the moment, there are 2
 database. 1st to create the model and receive the ID and then 2nd to set the hash_id based on the ID.
 
 > **Note:** `Updating` eloquent event is not fired, when setting the `hash_id`. This is the default behaviour since
-> version 1.0.0. It is still possible to change this via `save_quietly` config setting.
+> version 0.6.0. It is still possible to change this via `save_quietly` config setting.
 
 ## Testing
 
