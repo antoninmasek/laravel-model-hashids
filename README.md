@@ -5,8 +5,10 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/antoninmasek/laravel-model-hashids/Check%20&%20fix%20styling?label=code%20style)](https://github.com/antoninmasek/laravel-model-hashids/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/antoninmasek/laravel-model-hashids.svg?style=flat-square)](https://packagist.org/packages/antoninmasek/laravel-model-hashids)
 
-In some cases I really like to use [Hashids](https://hashids.org/php/) instead of uuids as my model keys. For me Hashids are less awkward to read and the resulting URL looks 
-a bit nicer in my opinion. This package is inspired by [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) by Michael Dyrynda and aims
+In some cases I really like to use [Hashids](https://hashids.org/php/) instead of uuids as my model keys. For me Hashids
+are less awkward to read and the resulting URL looks
+a bit nicer in my opinion. This package is inspired
+by [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) by Michael Dyrynda and aims
 to make it a breeze to start using Hashids as your model keys.
 
 ## Installation
@@ -42,7 +44,8 @@ return [
 ];
 ```
 
-> This package uses [antoninmasek/laravel-hashids](https://github.com/antoninmasek/laravel-hashids) in the background. And if you wish
+> This package uses [antoninmasek/laravel-hashids](https://github.com/antoninmasek/laravel-hashids) in the background.
+> And if you wish
 > to configure some aspects of the underlying hash id generation, then please
 > take a look at a readme of the package.
 
@@ -51,7 +54,8 @@ return [
 To use this package you'll be most interested in the following two traits: `GeneratesHashId` and `BindsOnHashId`.
 
 ### Generating hash id
-In order for your model to automatically get a hash id after it is created just use 
+
+In order for your model to automatically get a hash id after it is created just use
 `GeneratesHashId` trait on your model:
 
 ```php
@@ -64,6 +68,7 @@ class YourModel extend Model
 ```
 
 ### Binding on hash id
+
 To also bind your model to hash id you also need to use `BindsOnHashId` trait:
 
 ```php
@@ -83,6 +88,7 @@ If you need to execute some logic in order to determine salt/alphabet/minlength 
 a few callbacks at your disposal:
 
 ### Global
+
 If you want to set these globally you may use the following callbacks. The callback is
 supplied with the model as a parameter.
 
@@ -106,6 +112,7 @@ ModelHashids::generateAlphabetUsing(function(Model $model) {
 ```
 
 ## Local
+
 If you wish to have a specific logic just for a certain model you may define these methods
 on the desired model:
 
@@ -127,6 +134,7 @@ public function hashIdMinLength(): string;
 ```
 
 ### Precedence
+
 This is the order in which the values are taken:
 
 1. Model specific logic
@@ -135,7 +143,9 @@ This is the order in which the values are taken:
 4. Hashids package
 
 ## Regenerating hash id
+
 If you wish to regenerate a hash id for a particular model with current configuration you may do so as follows:
+
 ```php
 // This will save the new hash id directly to database
 $model->regenerateHashId();
@@ -146,8 +156,12 @@ $model->regenerateHashId(saveToDatabase: false);
 ```
 
 ## Limitations
+
 If your model key is auto-incrementing then, at least at the moment, there are 2 round-trips to the
 database. 1st to create the model and receive the ID and then 2nd to set the hash_id based on the ID.
+
+> **Note:** `Updating` eloquent event is not fired, when setting the `hash_id`. This is the default behaviour since
+> version 1.0.0. It is still possible to change this via `save_quietly` config setting.
 
 ## Testing
 
