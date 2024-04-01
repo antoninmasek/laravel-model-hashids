@@ -1,36 +1,37 @@
 name: run-tests
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
-  test-laravel-9:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
-        php: [8.1, 8.2]
-        laravel: ['9.*']
-        phpunit: ['9.5.8']
-        testbench: ['7.22.0']
-        collision: ['6.4']
-        stability: [prefer-lowest,prefer-stable]
+        os: [ ubuntu-latest ]
+        php: [ 8.3, 8.2, 8.1 ]
+        laravel: [ 11.*, 10.* ]
+        stability: [ prefer-lowest, prefer-stable ]
+        include:
+          - laravel: 11.*
+            testbench: 9.*
+          - laravel: 10.*
+            testbench: 8.*
+        exclude:
+          - laravel: 11.*
+            php: 8.1
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
           coverage: none
 
       - name: Setup problem matchers
@@ -40,47 +41,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "nunomaduro/collision:~${{ matrix.collision }}" "orchestra/testbench:~${{ matrix.testbench }}" "phpunit/phpunit:~${{ matrix.phpunit }}" --dev --no-interaction --no-update
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Execute tests
-        run: vendor/bin/phpunit --no-coverage
-
-  test-laravel-10:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest]
-        php: [8.1,8.2]
-        laravel: ['10.*']
-        phpunit: ['10.0']
-        testbench: ['8.0']
-        collision: ['7.0.2']
-        stability: [prefer-lowest,prefer-stable]
-
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
-
-      - name: Setup problem matchers
-        run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-      - name: Install dependencies
-        run: |
-          composer require "nunomaduro/collision:~${{ matrix.collision }}" "orchestra/testbench:~${{ matrix.testbench }}" "phpunit/phpunit:~${{ matrix.phpunit }}" --dev --no-interaction --no-update
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
       - name: Execute tests
         run: vendor/bin/phpunit --no-coverage

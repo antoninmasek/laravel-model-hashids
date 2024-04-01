@@ -1,9 +1,8 @@
 # Easily use Hashids with Laravel models.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/antoninmasek/laravel-model-hashids.svg?style=flat-square)](https://packagist.org/packages/antoninmasek/laravel-model-hashids)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/antoninmasek/laravel-model-hashids/run-tests?label=tests)](https://github.com/antoninmasek/laravel-model-hashids/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/antoninmasek/laravel-model-hashids/Check%20&%20fix%20styling?label=code%20style)](https://github.com/antoninmasek/laravel-model-hashids/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/antoninmasek/laravel-model-hashids.svg?style=flat-square)](https://packagist.org/packages/antoninmasek/laravel-model-hashids)
+![Packagist Version](https://img.shields.io/packagist/v/antoninmasek/laravel-model-hashids?style=flat-square&link=https%3A%2F%2Fpackagist.org%2Fpackages%2Fantoninmasek%2Flaravel-model-hashids)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/antoninmasek/laravel-model-hashids/run-tests.yml?branch=main&style=flat-square&label=tests)
+![Packagist Downloads](https://img.shields.io/packagist/dt/antoninmasek/laravel-model-hashids?style=flat-square&link=https%3A%2F%2Fpackagist.org%2Fpackages%2Fantoninmasek%2Flaravel-model-hashids)
 
 In some cases I really like to use [Hashids](https://hashids.org/php/) instead of uuids as my model keys. For me Hashids
 are less awkward to read and the resulting URL looks
@@ -175,7 +174,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 ## Credits
 
-- [Antonín Mašek](https://github.com/antoninmasek)
+[Antonín Mašek](https://github.com/antoninmasek)
 
 ## License
 
