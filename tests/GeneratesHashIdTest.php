@@ -2,7 +2,6 @@
 
 namespace AntoninMasek\Hashids\Tests;
 
-use _PHPStan_9a6ded56a\Nette\Neon\Exception;
 use AntoninMasek\Hashids\Facades\Hashids;
 use AntoninMasek\Hashids\ModelHashids;
 use AntoninMasek\Hashids\Tests\Fixtures\BindingTestModel;
@@ -12,6 +11,7 @@ use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithDifferentHashidColumn;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithDifferentKeyForGenerationGenerator;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithMinLengthGenerator;
 use AntoninMasek\Hashids\Tests\Fixtures\TestModelWithSaltGenerator;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Event;
