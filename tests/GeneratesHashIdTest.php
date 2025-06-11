@@ -28,7 +28,7 @@ class GeneratesHashIdTest extends TestCase
         ModelHashids::generateMinLengthUsing(null);
     }
 
-    public function testItGeneratesHashIdWhenModelIsCreated()
+    public function test_it_generates_hash_id_when_model_is_created()
     {
         $model = TestModel::create();
         $model2 = BindingTestModel::create();
@@ -42,7 +42,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertSame($model->hash_id, $model2->hash_id);
     }
 
-    public function testItDoesNotGenerateHashIdWhenModelAlreadyHasHashIdColumnFilled()
+    public function test_it_does_not_generate_hash_id_when_model_already_has_hash_id_column_filled()
     {
         $model = TestModel::create(['hash_id' => 'test']);
 
@@ -50,7 +50,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertFalse($model->wasChanged(['hash_id']));
     }
 
-    public function testWhenUsingBindingTraitItBindsToHashId()
+    public function test_when_using_binding_trait_it_binds_to_hash_id()
     {
         $model = BindingTestModel::create();
 
@@ -64,7 +64,7 @@ class GeneratesHashIdTest extends TestCase
         );
     }
 
-    public function testWhenNotUsingBindingTraitItDoesNotBindToHashId()
+    public function test_when_not_using_binding_trait_it_does_not_bind_to_hash_id()
     {
         $model = TestModel::create();
 
@@ -77,7 +77,7 @@ class GeneratesHashIdTest extends TestCase
         );
     }
 
-    public function testItIsPossibleToGloballyOverwriteSaltGenerationUsingCallback()
+    public function test_it_is_possible_to_globally_overwrite_salt_generation_using_callback()
     {
         ModelHashids::generateSaltUsing(function (Model $model) {
             return $model::class;
@@ -92,7 +92,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::encode($model2->id), $model2->hash_id);
     }
 
-    public function testItIsPossibleToGloballyOverwriteSaltGenerationUsingConfig()
+    public function test_it_is_possible_to_globally_overwrite_salt_generation_using_config()
     {
         config()->set('hashids.salt', 'test');
 
@@ -105,7 +105,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::salt('')->encode($model2->id), $model2->hash_id);
     }
 
-    public function testItIsPossibleToLocallyOverwriteSaltGenerationUsingCallback()
+    public function test_it_is_possible_to_locally_overwrite_salt_generation_using_callback()
     {
         $model = TestModel::create();
         $model2 = BindingTestModel::create();
@@ -118,7 +118,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame($model->hash_id, $model3->hash_id);
     }
 
-    public function testItIsPossibleToGloballyOverwriteMinLengthGenerationUsingCallback()
+    public function test_it_is_possible_to_globally_overwrite_min_length_generation_using_callback()
     {
         ModelHashids::generateMinLengthUsing(function (Model $model) {
             return strlen($model::class);
@@ -135,7 +135,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertSame(strlen(BindingTestModel::class), strlen($model2->hash_id));
     }
 
-    public function testItIsPossibleToGloballyOverwriteMinLengthGenerationUsingConfig()
+    public function test_it_is_possible_to_globally_overwrite_min_length_generation_using_config()
     {
         $minLength = 10;
         config()->set('hashids.min_length', $minLength);
@@ -151,7 +151,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::minLength(0)->encode($model2->id), $model2->hash_id);
     }
 
-    public function testItIsPossibleToLocallyOverwriteMinLengthGenerationUsingCallback()
+    public function test_it_is_possible_to_locally_overwrite_min_length_generation_using_callback()
     {
         $model = TestModel::create();
         $model2 = BindingTestModel::create();
@@ -165,7 +165,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertSame(strlen(TestModelWithMinLengthGenerator::class), strlen($model3->hash_id));
     }
 
-    public function testItIsPossibleToGloballyOverwriteAlphabetGenerationUsingCallback()
+    public function test_it_is_possible_to_globally_overwrite_alphabet_generation_using_callback()
     {
         ModelHashids::generateAlphabetUsing(function () {
             return '1234567890abcdef';
@@ -180,7 +180,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::encode($model2->id), $model2->hash_id);
     }
 
-    public function testItIsPossibleToGloballyOverwriteAlphabetGenerationUsingConfig()
+    public function test_it_is_possible_to_globally_overwrite_alphabet_generation_using_config()
     {
         config()->set('hashids.alphabet', '1234567890abcdef');
 
@@ -193,7 +193,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::alphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')->encode($model2->id), $model2->hash_id);
     }
 
-    public function testItIsPossibleToLocallyOverwriteAlphabetGenerationUsingCallback()
+    public function test_it_is_possible_to_locally_overwrite_alphabet_generation_using_callback()
     {
         $model = TestModel::create();
         $model2 = BindingTestModel::create();
@@ -206,7 +206,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame($model->hash_id, $model3->hash_id);
     }
 
-    public function testLocalCallbackHasPrecedenceOverGlobalCallback()
+    public function test_local_callback_has_precedence_over_global_callback()
     {
         ModelHashids::generateSaltUsing(function () {
             return 'test';
@@ -225,7 +225,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::encode($model3->id), $model3->hash_id);
     }
 
-    public function testGlobalCallbackHasPrecedenceOverConfigValue()
+    public function test_global_callback_has_precedence_over_config_value()
     {
         ModelHashids::generateSaltUsing(function () {
             return 'callback';
@@ -243,7 +243,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::salt('')->encode($model->id), $model->hash_id);
     }
 
-    public function testConfigValueHasPrecedenceOverDefaultPackageValue()
+    public function test_config_value_has_precedence_over_default_package_value()
     {
         config()->set('hashids.salt', 'config');
 
@@ -256,7 +256,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotSame(Hashids::salt('')->encode($model->id), $model->hash_id);
     }
 
-    public function testItDoesNotDoTwoTripsToDbWhenKeyForGenerationIsPresentDuringCreation()
+    public function test_it_does_not_do_two_trips_to_db_when_key_for_generation_is_present_during_creation()
     {
         $model = TestModel::create();
         $model2 = TestModelWithDifferentKeyForGenerationGenerator::create(['diff_key' => 1]);
@@ -270,7 +270,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertFalse($model2->wasChanged('hash_id'));
     }
 
-    public function testItIsPossibleToUseDifferentColumnToFillWithHashId()
+    public function test_it_is_possible_to_use_different_column_to_fill_with_hash_id()
     {
         config()->set('model-hashids.hash_id_column', 'alternative_hash_id');
 
@@ -280,7 +280,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotNull($model->alternative_hash_id);
     }
 
-    public function testItIsPossibleToUseDifferentColumnToFillWithHashIdForSpecificModel()
+    public function test_it_is_possible_to_use_different_column_to_fill_with_hash_id_for_specific_model()
     {
         $model = TestModel::create();
         $model2 = TestModelWithDifferentHashidColumn::create();
@@ -292,7 +292,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertNotNull($model2->alternative_hash_id);
     }
 
-    public function testItCanQueryResultsViaScope()
+    public function test_it_can_query_results_via_scope()
     {
         TestModel::create();
         $model = TestModel::create();
@@ -302,7 +302,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertTrue($model->is($results->first()));
     }
 
-    public function testItCanRegenerateHashIdColumnQuietly()
+    public function test_it_can_regenerate_hash_id_column_quietly()
     {
         $model = TestModel::create();
         $expectedHashId = $model->hash_id;
@@ -318,7 +318,7 @@ class GeneratesHashIdTest extends TestCase
         Event::assertNotDispatched('eloquent.updating: '.TestModel::class);
     }
 
-    public function testItCanRegenerateHashIdColumnAndFireUpdatingEvent()
+    public function test_it_can_regenerate_hash_id_column_and_fire_updating_event()
     {
         config()->set('model-hashids.save_quietly', false);
 
@@ -336,7 +336,7 @@ class GeneratesHashIdTest extends TestCase
         Event::assertDispatched('eloquent.updating: '.TestModel::class);
     }
 
-    public function testItCanRegenerateHashIdColumn()
+    public function test_it_can_regenerate_hash_id_column()
     {
         $model = TestModel::create();
         $expectedHashId = $model->hash_id;
@@ -350,7 +350,7 @@ class GeneratesHashIdTest extends TestCase
         $this->assertTrue($model->wasChanged(['hash_id']));
     }
 
-    public function testItCanRegenerateHashIdColumnWithoutInstantlyPersistingInDatabase()
+    public function test_it_can_regenerate_hash_id_column_without_instantly_persisting_in_database()
     {
         $model = TestModel::create();
         $expectedHashId = $model->hash_id;
